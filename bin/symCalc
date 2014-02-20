@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 ###############################################################################
 #                                                                             #
-#    symCalc                                                         #
+#    symCalc                                                                  #
 #                                                                             #
-#    Description!!                                                            #
+#    Toolbox for calculating number of reads to extract from files when       #
+#    making simulated datasets                                                #
 #                                                                             #
 #    Copyright (C) Michael Imelfort                                           #
 #                                                                             #
@@ -28,10 +29,10 @@ __author__ = "Michael Imelfort"
 __copyright__ = "Copyright 2013"
 __credits__ = ["Michael Imelfort"]
 __license__ = "GPLv3"
-__version__ = "0.0.1"
+__version__ = "1"
 __maintainer__ = "Michael Imelfort"
 __email__ = "mike@mikeimelfort.com"
-__status__ = "Dev"
+__status__ = "Release"
 
 ###############################################################################
 ###############################################################################
@@ -41,17 +42,6 @@ __status__ = "Dev"
 import argparse
 import sys
 
-#import os
-#import errno
-
-#import numpy as np
-#np.seterr(all='raise')     
-
-#import matplotlib as mpl
-#import matplotlib.pyplot as plt
-#from mpl_toolkits.mplot3d import axes3d, Axes3D
-#from pylab import plot,subplot,axis,stem,show,figure
-
 ###############################################################################
 ###############################################################################
 ###############################################################################
@@ -60,9 +50,10 @@ import sys
 def doWork(args):
     """Wrapper function to allow easy profiling"""
     # hook into core project code here. For example:
-    from symcalc.symCalc import TemplateClass
-    TC = TemplateClass()
-    TC.sayHi()
+    from symcalc.symCalc import Calculator
+    C = Calculator(args.otu, args.volumes)
+    C.loadFileInfo(args.fileInfo)
+    print C.calc()
 
 ###############################################################################
 ###############################################################################
@@ -71,13 +62,12 @@ def doWork(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    #parser.add_argument('positional_arg', help="Required")
-    #parser.add_argument('positional_arg2', type=int, help="Integer argument")
-    #parser.add_argument('positional_arg3', nargs='+', help="Multiple values")
-    #parser.add_argument('-X', '--optional_X', action="store_true", default=False, help="flag")
-    
+    parser.add_argument('otu', help="OTU table used to gather abundances")
+    parser.add_argument('fileInfo', help="lengths and locations of files to sample from")
+    parser.add_argument('volumes', type=int, nargs='+', help="TOTAL number of reads for each sample")
+
     # parse the arguments
-    args = parser.parse_args()        
+    args = parser.parse_args()
 
     # profiling happens here. If you'd like to track the speed your code runs at
     # then set the following to True and voila!
